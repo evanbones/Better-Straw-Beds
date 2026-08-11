@@ -94,6 +94,20 @@ public abstract class ServerPlayerMixin implements SpawnChainHolder, PendingBedS
         this.better_straw_beds$chain.copyFrom(((SpawnChainHolder) that).better_straw_beds$getSpawnChain());
     }
 
+    @Inject(method = "setRespawnPosition", at = @At("HEAD"), cancellable = true)
+    private void better_straw_beds$preventStrawBedSpawn(
+            ResourceKey<Level> dimension, @Nullable BlockPos position, float angle, boolean forced, boolean sendMessage, CallbackInfo ci) {
+        ModConfig config = ModConfig.get();
+        if (!config.enabled || config.strawBedSetsSpawn || position == null || forced || !sendMessage) {
+            return;
+        }
+
+        ServerLevel level = this.better_straw_beds$self.server.getLevel(dimension);
+        if (level != null && ModBlocks.isStrawBed(level.getBlockState(position))) {
+            ci.cancel();
+        }
+    }
+
     @Inject(method = "setRespawnPosition", at = @At("HEAD"))
     private void better_straw_beds$recordSpawnPoint(
             ResourceKey<Level> dimension, @Nullable BlockPos position, float angle, boolean forced, boolean sendMessage, CallbackInfo ci) {
