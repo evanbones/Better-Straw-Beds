@@ -16,8 +16,8 @@ public class ModConfig {
     private static final File CONFIG_FILE = Services.PLATFORM.getConfigDirectory().resolve(Constants.MOD_ID + ".json").toFile();
     private static ModConfig INSTANCE;
 
-    @SerializedName("enabled")
-    public boolean enabled = true;
+    @SerializedName("chain_respawn_enabled")
+    public boolean chainRespawnEnabled = true;
 
     @SerializedName("max_tracked_spawn_points")
     public int maxTrackedSpawnPoints = 0;

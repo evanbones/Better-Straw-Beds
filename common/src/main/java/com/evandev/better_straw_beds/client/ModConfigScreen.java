@@ -22,7 +22,8 @@ public class ModConfigScreen {
 
         ConfigCategory.Builder general = ConfigCategory.createBuilder()
                 .name(Component.translatable("config.better_straw_beds.category.general"))
-                .option(createBoolOption("enabled", true, () -> ModConfig.get().enabled, val -> ModConfig.get().enabled = val))
+                .option(createBoolOption("chain_respawn_enabled", true,
+                        () -> ModConfig.get().chainRespawnEnabled, val -> ModConfig.get().chainRespawnEnabled = val))
                 .option(createIntOption("max_tracked_spawn_points", 0, 0, 100,
                         () -> ModConfig.get().maxTrackedSpawnPoints, val -> ModConfig.get().maxTrackedSpawnPoints = val))
                 .option(createBoolOption("straw_bed_breaks_on_respawn", true,

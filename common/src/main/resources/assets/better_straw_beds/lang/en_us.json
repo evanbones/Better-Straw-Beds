@@ -9,8 +9,8 @@
   "config.better_straw_beds.title": "Better Straw Beds Config",
   "config.better_straw_beds.category.general": "General",
 
-  "config.better_straw_beds.option.enabled": "Enabled",
-  "config.better_straw_beds.option.enabled.description": "Master switch for straw bed consumption and chained respawn points.",
+  "config.better_straw_beds.option.chain_respawn_enabled": "Chained Respawn Points",
+  "config.better_straw_beds.option.chain_respawn_enabled.description": "Track previous respawn points and fall back to them when the current one is unusable.",
   "config.better_straw_beds.option.max_tracked_spawn_points": "Tracked Respawn Points",
   "config.better_straw_beds.option.max_tracked_spawn_points.description": "How many previous respawn points to remember per player. 0 means unlimited.",
   "config.better_straw_beds.option.straw_bed_breaks_on_respawn": "Straw Bed Breaks On Respawn",

@@ -2,7 +2,6 @@ package com.evandev.better_straw_beds.mixin;
 
 import com.evandev.better_straw_beds.block.BedBreaker;
 import com.evandev.better_straw_beds.block.StrawBedRegistrations;
-import com.evandev.better_straw_beds.config.ModConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -32,7 +31,7 @@ public abstract class PlayerSleepMixin {
 
         Player self = (Player) (Object) this;
         Level level = self.level();
-        if (pos == null || level.isClientSide() || !ModConfig.get().enabled) {
+        if (pos == null || level.isClientSide()) {
             return;
         }
 

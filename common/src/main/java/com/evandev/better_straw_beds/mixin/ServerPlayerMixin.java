@@ -98,7 +98,7 @@ public abstract class ServerPlayerMixin implements SpawnChainHolder, PendingBedS
     private void better_straw_beds$preventStrawBedSpawn(
             ResourceKey<Level> dimension, @Nullable BlockPos position, float angle, boolean forced, boolean sendMessage, CallbackInfo ci) {
         ModConfig config = ModConfig.get();
-        if (!config.enabled || config.strawBedSetsSpawn || position == null || forced || !sendMessage) {
+        if (config.strawBedSetsSpawn || position == null || forced || !sendMessage) {
             return;
         }
 
@@ -111,7 +111,7 @@ public abstract class ServerPlayerMixin implements SpawnChainHolder, PendingBedS
     @Inject(method = "setRespawnPosition", at = @At("HEAD"))
     private void better_straw_beds$recordSpawnPoint(
             ResourceKey<Level> dimension, @Nullable BlockPos position, float angle, boolean forced, boolean sendMessage, CallbackInfo ci) {
-        if (!ModConfig.get().enabled || this.better_straw_beds$updatingChain || position == null || forced || !sendMessage) {
+        if (!ModConfig.get().chainRespawnEnabled || this.better_straw_beds$updatingChain || position == null || forced || !sendMessage) {
             return;
         }
 
@@ -129,7 +129,7 @@ public abstract class ServerPlayerMixin implements SpawnChainHolder, PendingBedS
     @Inject(method = "findRespawnPositionAndUseSpawnBlock", at = @At("HEAD"))
     private void better_straw_beds$fallBackToPreviousSpawn(
             boolean keepInventory, DimensionTransition.PostDimensionTransition postTransition, CallbackInfoReturnable<DimensionTransition> cir) {
-        if (!ModConfig.get().enabled) {
+        if (!ModConfig.get().chainRespawnEnabled) {
             return;
         }
 
@@ -140,7 +140,7 @@ public abstract class ServerPlayerMixin implements SpawnChainHolder, PendingBedS
     private void better_straw_beds$consumeStrawBed(
             boolean keepInventory, DimensionTransition.PostDimensionTransition postTransition, CallbackInfoReturnable<DimensionTransition> cir) {
         ModConfig config = ModConfig.get();
-        if (!config.enabled || !config.strawBedBreaksOnRespawn || keepInventory) {
+        if (!config.strawBedBreaksOnRespawn || keepInventory) {
             return;
         }
 
