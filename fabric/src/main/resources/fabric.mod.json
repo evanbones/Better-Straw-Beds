@@ -8,21 +8,21 @@
     "${mod_author}"
   ],
   "contact": {
-    "homepage": "https://github.com/evanbones/Straw-Backup-Beds",
-    "sources": "https://github.com/evanbones/Straw-Backup-Beds"
+    "homepage": "https://github.com/evanbones/Better-Straw-Beds",
+    "sources": "https://github.com/evanbones/Better-Straw-Beds"
   },
   "license": "${license}",
   "icon": "${mod_id}.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.evandev.straw_backup_beds.StrawBackupBeds"
+      "com.evandev.better_straw_beds.BetterStrawBeds"
     ],
     "client": [
-      "com.evandev.straw_backup_beds.client.StrawBackupBedsClient"
+      "com.evandev.better_straw_beds.client.BetterStrawBedsClient"
     ],
     "modmenu": [
-      "com.evandev.straw_backup_beds.compat.ModMenuIntegration"
+      "com.evandev.better_straw_beds.compat.ModMenuIntegration"
     ]
   },
   "mixins": [

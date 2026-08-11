@@ -1,7 +1,7 @@
 modLoader = "javafml"
 loaderVersion = "${neoforge_loader_version_range}"
 license = "${license}"
-issueTrackerURL = "https://github.com/evanbones/Straw-Backup-Beds/issues"
+issueTrackerURL = "https://github.com/evanbones/Better-Straw-Beds/issues"
 
 [[mods]]
 modId = "${mod_id}"

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": {
+      "item": "minecraft:hay_block"
+    }
+  },
+  "pattern": [
+    "XXX"
+  ],
+  "result": {
+    "id": "better_straw_beds:straw_bed",
+    "count": 4
+  }
+}
