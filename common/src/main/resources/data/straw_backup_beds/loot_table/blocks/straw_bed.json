@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:block",
+  "random_sequence": "straw_backup_beds:blocks/straw_bed",
+  "pools": [
+    {
+      "rolls": 1.0,
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "straw_backup_beds:straw_bed",
+          "conditions": [
+            {
+              "condition": "minecraft:block_state_property",
+              "block": "straw_backup_beds:straw_bed",
+              "properties": {
+                "part": "head"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

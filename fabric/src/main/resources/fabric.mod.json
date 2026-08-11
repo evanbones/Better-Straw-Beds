@@ -23,9 +23,6 @@
     ],
     "modmenu": [
       "com.evandev.straw_backup_beds.compat.ModMenuIntegration"
-    ],
-    "fabric-datagen": [
-      "com.evandev.straw_backup_beds.datagen.TemplateDataGenerator"
     ]
   },
   "mixins": [

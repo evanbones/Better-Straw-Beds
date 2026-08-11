@@ -1,0 +1,24 @@
+{
+  "block.straw_backup_beds.straw_bed": "Straw Bed",
+
+  "subtitles.straw_backup_beds.block.straw_bed.break_leave": "Straw Bed breaks",
+
+  "message.straw_backup_beds.chain_fallback": "Your straw bed broke. Respawn point moved to your previous bed.",
+  "message.straw_backup_beds.chain_empty": "Your straw bed broke. You have no backup respawn points left.",
+
+  "config.straw_backup_beds.title": "Straw Backup Beds Config",
+  "config.straw_backup_beds.category.general": "General",
+
+  "config.straw_backup_beds.option.enabled": "Enabled",
+  "config.straw_backup_beds.option.enabled.description": "Master switch for straw bed consumption and chained respawn points.",
+  "config.straw_backup_beds.option.max_tracked_spawn_points": "Tracked Respawn Points",
+  "config.straw_backup_beds.option.max_tracked_spawn_points.description": "How many previous respawn points to remember per player. 0 means unlimited.",
+  "config.straw_backup_beds.option.straw_bed_breaks_on_respawn": "Straw Bed Breaks On Respawn",
+  "config.straw_backup_beds.option.straw_bed_breaks_on_respawn.description": "Destroy a straw bed once a player respawns at it, falling back to their previous respawn point.",
+  "config.straw_backup_beds.option.chain_messages": "Respawn Chain Messages",
+  "config.straw_backup_beds.option.chain_messages.description": "Tell players when their respawn point falls back to a previous bed.",
+  "config.straw_backup_beds.option.straw_bed_breaks_on_sleep": "Straw Bed Breaks On Sleep",
+  "config.straw_backup_beds.option.straw_bed_breaks_on_sleep.description": "Destroy a straw bed as soon as the sleeper gets out of it, like vanilla 26.3 straw beds.",
+  "config.straw_backup_beds.option.nml_straw_bed_breaks_on_sleep": "NML Straw Bed Breaks On Sleep",
+  "config.straw_backup_beds.option.nml_straw_bed_breaks_on_sleep.description": "Same, for No Man's Land's straw beds."
+}
