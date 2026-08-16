@@ -1,28 +1,20 @@
 plugins {
     id 'multiloader-loader'
-    id 'fabric-loom'
+    id 'net.fabricmc.fabric-loom'
 }
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
-    mappings loom.layered {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${parchment_minecraft}:${parchment_version}@zip")
-    }
-
-    // EMI
-    modRuntimeOnly "dev.emi:emi-fabric:${emi_version}"
+    implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
     // YACL
-    modImplementation "maven.modrinth:yacl:${yacl_version}-fabric"
+    implementation "maven.modrinth:yacl:${yacl_version}-fabric"
     implementation "org.quiltmc.parsers:json:0.3.0"
     implementation "org.quiltmc.parsers:gson:0.3.0"
     include "org.quiltmc.parsers:json:0.3.0"
     include "org.quiltmc.parsers:gson:0.3.0"
-    modImplementation "com.terraformersmc:modmenu:${mod_menu_version}"
-
-    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    implementation "com.terraformersmc:modmenu:${mod_menu_version}"
 }
 
 loom {
@@ -47,6 +39,25 @@ loom {
     }
 }
 
+def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', String)
+['apiElements', 'runtimeElements', 'includeInternal', 'modCompileClasspath'].each { variant ->
+    configurations.named("$variant") {
+        attributes {
+            attribute(loaderAttribute, 'fabric')
+        }
+    }
+}
+
+sourceSets.configureEach {
+    [it.compileClasspathConfigurationName, it.runtimeClasspathConfigurationName].each { variant ->
+        configurations.named("$variant") {
+            attributes {
+                attribute(loaderAttribute, 'fabric')
+            }
+        }
+    }
+}
+
 publishMods {
-    file = tasks.named("remapJar").flatMap { it.archiveFile }
+    file = tasks.named("jar").flatMap { it.archiveFile }
 }

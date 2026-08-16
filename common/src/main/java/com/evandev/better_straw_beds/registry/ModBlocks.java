@@ -1,7 +1,7 @@
 package com.evandev.better_straw_beds.registry;
 
 import com.evandev.better_straw_beds.Constants;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -10,7 +10,7 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 
 public final class ModBlocks {
-    public static final ResourceLocation STRAW_BED_ID = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "straw_bed");
+    public static final Identifier STRAW_BED_ID = Identifier.fromNamespaceAndPath(Constants.MOD_ID, "straw_bed");
 
     public static Block STRAW_BED;
     public static Item STRAW_BED_ITEM;

@@ -33,9 +33,7 @@ public class ModConfigScreen {
                 .option(createBoolOption("straw_bed_breaks_on_sleep", false,
                         () -> ModConfig.get().strawBedBreaksOnSleep, val -> ModConfig.get().strawBedBreaksOnSleep = val))
                 .option(createBoolOption("straw_bed_sets_spawn", true,
-                        () -> ModConfig.get().strawBedSetsSpawn, val -> ModConfig.get().strawBedSetsSpawn = val))
-                .option(createBoolOption("nml_straw_bed_breaks_on_sleep", false,
-                        () -> ModConfig.get().nmlStrawBedBreaksOnSleep, val -> ModConfig.get().nmlStrawBedBreaksOnSleep = val));
+                        () -> ModConfig.get().strawBedSetsSpawn, val -> ModConfig.get().strawBedSetsSpawn = val));
 
         return builder.category(general.build()).build().generateScreen(parent);
     }

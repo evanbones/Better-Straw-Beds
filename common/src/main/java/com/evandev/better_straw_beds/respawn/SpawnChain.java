@@ -2,9 +2,10 @@ package com.evandev.better_straw_beds.respawn;
 
 import com.evandev.better_straw_beds.config.ModConfig;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
@@ -52,22 +53,21 @@ public final class SpawnChain {
         }
     }
 
-    public ListTag save() {
-        ListTag list = new ListTag();
+    public void save(ValueOutput output, String key) {
+        if (this.entries.isEmpty()) {
+            return;
+        }
+
+        ValueOutput.TypedOutputList<SpawnEntry> list = output.list(key, SpawnEntry.CODEC);
         for (SpawnEntry entry : this.entries) {
-            list.add(entry.save());
+            list.add(entry);
         }
-        return list;
     }
 
-    public void load(ListTag list) {
+    public void load(ValueInput input, String key) {
         this.entries.clear();
-        for (int i = 0; i < list.size(); i++) {
-            SpawnEntry entry = SpawnEntry.load(list.getCompound(i));
-            if (entry != null) {
-                this.entries.add(entry);
-            }
+        for (SpawnEntry entry : input.listOrEmpty(key, SpawnEntry.CODEC)) {
+            this.entries.add(entry);
         }
     }
-
 }

@@ -34,9 +34,6 @@ public class ModConfig {
     @SerializedName("straw_bed_sets_spawn")
     public boolean strawBedSetsSpawn = true;
 
-    @SerializedName("nml_straw_bed_breaks_on_sleep")
-    public boolean nmlStrawBedBreaksOnSleep = false;
-
     public static ModConfig get() {
         if (INSTANCE == null) {
             load();

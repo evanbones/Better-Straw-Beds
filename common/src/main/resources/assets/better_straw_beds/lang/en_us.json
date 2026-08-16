@@ -20,7 +20,5 @@
   "config.better_straw_beds.option.straw_bed_breaks_on_sleep": "Straw Bed Breaks On Sleep",
   "config.better_straw_beds.option.straw_bed_breaks_on_sleep.description": "Destroy a straw bed as soon as the sleeper gets out of it, like vanilla 26.3 straw beds.",
   "config.better_straw_beds.option.straw_bed_sets_spawn": "Straw Bed Sets Spawn",
-  "config.better_straw_beds.option.straw_bed_sets_spawn.description": "Whether sleeping in a straw bed sets your respawn point. Disable to match vanilla 26.3 behaviour.",
-  "config.better_straw_beds.option.nml_straw_bed_breaks_on_sleep": "NML Straw Bed Breaks On Sleep",
-  "config.better_straw_beds.option.nml_straw_bed_breaks_on_sleep.description": "Same, for No Man's Land's straw beds."
+  "config.better_straw_beds.option.straw_bed_sets_spawn.description": "Whether sleeping in a straw bed sets your respawn point. Disable to match vanilla 26.3 behaviour."
 }

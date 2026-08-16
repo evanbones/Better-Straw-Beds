@@ -9,18 +9,20 @@ import com.evandev.better_straw_beds.respawn.SpawnChainHolder;
 import com.evandev.better_straw_beds.respawn.SpawnEntry;
 import com.evandev.better_straw_beds.respawn.SpawnPointState;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.RespawnAnchorBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.level.portal.TeleportTransition;
+import net.minecraft.world.level.storage.LevelData;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -78,57 +80,57 @@ public abstract class ServerPlayerMixin implements SpawnChainHolder, PendingBedS
     }
 
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
-    private void better_straw_beds$saveChain(CompoundTag tag, CallbackInfo ci) {
-        tag.put(STRAW_BACKUP_BEDS$CHAIN_KEY, this.better_straw_beds$chain.save());
+    private void better_straw_beds$saveChain(ValueOutput output, CallbackInfo ci) {
+        this.better_straw_beds$chain.save(output, STRAW_BACKUP_BEDS$CHAIN_KEY);
     }
 
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
-    private void better_straw_beds$loadChain(CompoundTag tag, CallbackInfo ci) {
-        if (tag.contains(STRAW_BACKUP_BEDS$CHAIN_KEY, Tag.TAG_LIST)) {
-            this.better_straw_beds$chain.load(tag.getList(STRAW_BACKUP_BEDS$CHAIN_KEY, Tag.TAG_COMPOUND));
-        }
+    private void better_straw_beds$loadChain(ValueInput input, CallbackInfo ci) {
+        this.better_straw_beds$chain.load(input, STRAW_BACKUP_BEDS$CHAIN_KEY);
     }
 
     @Inject(method = "restoreFrom", at = @At("TAIL"))
-    private void better_straw_beds$restoreChain(ServerPlayer that, boolean keepEverything, CallbackInfo ci) {
+    private void better_straw_beds$restoreChain(ServerPlayer that, boolean restoreAll, CallbackInfo ci) {
         this.better_straw_beds$chain.copyFrom(((SpawnChainHolder) that).better_straw_beds$getSpawnChain());
     }
 
     @Inject(method = "setRespawnPosition", at = @At("HEAD"), cancellable = true)
     private void better_straw_beds$preventStrawBedSpawn(
-            ResourceKey<Level> dimension, @Nullable BlockPos position, float angle, boolean forced, boolean sendMessage, CallbackInfo ci) {
+            ServerPlayer.@Nullable RespawnConfig respawnConfig, boolean showMessage, CallbackInfo ci) {
         ModConfig config = ModConfig.get();
-        if (config.strawBedSetsSpawn || position == null || forced || !sendMessage) {
+        if (config.strawBedSetsSpawn || respawnConfig == null || respawnConfig.forced() || !showMessage) {
             return;
         }
 
-        ServerLevel level = this.better_straw_beds$self.server.getLevel(dimension);
-        if (level != null && ModBlocks.isStrawBed(level.getBlockState(position))) {
+        LevelData.RespawnData data = respawnConfig.respawnData();
+        ServerLevel level = this.better_straw_beds$self.level().getServer().getLevel(data.dimension());
+        if (level != null && ModBlocks.isStrawBed(level.getBlockState(data.pos()))) {
             ci.cancel();
         }
     }
 
     @Inject(method = "setRespawnPosition", at = @At("HEAD"))
     private void better_straw_beds$recordSpawnPoint(
-            ResourceKey<Level> dimension, @Nullable BlockPos position, float angle, boolean forced, boolean sendMessage, CallbackInfo ci) {
-        if (!ModConfig.get().chainRespawnEnabled || this.better_straw_beds$updatingChain || position == null || forced || !sendMessage) {
+            ServerPlayer.@Nullable RespawnConfig respawnConfig, boolean showMessage, CallbackInfo ci) {
+        if (!ModConfig.get().chainRespawnEnabled || this.better_straw_beds$updatingChain || respawnConfig == null
+                || respawnConfig.forced() || !showMessage) {
             return;
         }
 
-        BlockPos current = this.better_straw_beds$self.getRespawnPosition();
-        ResourceKey<Level> currentDimension = this.better_straw_beds$self.getRespawnDimension();
-        if (current != null
-                && !this.better_straw_beds$self.isRespawnForced()
-                && !(current.equals(position) && currentDimension.equals(dimension))) {
-            this.better_straw_beds$chain.push(new SpawnEntry(currentDimension, current, this.better_straw_beds$self.getRespawnAngle()));
+        ServerPlayer.RespawnConfig current = this.better_straw_beds$self.getRespawnConfig();
+        if (current != null && !current.forced() && !current.isSamePosition(respawnConfig)) {
+            LevelData.RespawnData currentData = current.respawnData();
+            this.better_straw_beds$chain.push(new SpawnEntry(currentData.dimension(), currentData.pos(), currentData.yaw()));
         }
 
-        this.better_straw_beds$chain.remove(dimension, position);
+        LevelData.RespawnData data = respawnConfig.respawnData();
+        this.better_straw_beds$chain.remove(data.dimension(), data.pos());
     }
 
     @Inject(method = "findRespawnPositionAndUseSpawnBlock", at = @At("HEAD"))
     private void better_straw_beds$fallBackToPreviousSpawn(
-            boolean keepInventory, DimensionTransition.PostDimensionTransition postTransition, CallbackInfoReturnable<DimensionTransition> cir) {
+            boolean consumeSpawnBlock, TeleportTransition.PostTeleportTransition postTeleportTransition,
+            CallbackInfoReturnable<TeleportTransition> cir) {
         if (!ModConfig.get().chainRespawnEnabled) {
             return;
         }
@@ -138,23 +140,25 @@ public abstract class ServerPlayerMixin implements SpawnChainHolder, PendingBedS
 
     @Inject(method = "findRespawnPositionAndUseSpawnBlock", at = @At("RETURN"))
     private void better_straw_beds$consumeStrawBed(
-            boolean keepInventory, DimensionTransition.PostDimensionTransition postTransition, CallbackInfoReturnable<DimensionTransition> cir) {
+            boolean consumeSpawnBlock, TeleportTransition.PostTeleportTransition postTeleportTransition,
+            CallbackInfoReturnable<TeleportTransition> cir) {
         ModConfig config = ModConfig.get();
-        if (!config.strawBedBreaksOnRespawn || keepInventory) {
+        if (!config.strawBedBreaksOnRespawn || !consumeSpawnBlock) {
             return;
         }
 
-        DimensionTransition transition = cir.getReturnValue();
+        TeleportTransition transition = cir.getReturnValue();
         if (transition == null || transition.missingRespawnBlock()) {
             return;
         }
 
-        BlockPos pos = this.better_straw_beds$self.getRespawnPosition();
-        if (pos == null || this.better_straw_beds$self.isRespawnForced()) {
+        ServerPlayer.RespawnConfig respawnConfig = this.better_straw_beds$self.getRespawnConfig();
+        if (respawnConfig == null || respawnConfig.forced()) {
             return;
         }
 
-        ServerLevel level = this.better_straw_beds$self.server.getLevel(this.better_straw_beds$self.getRespawnDimension());
+        BlockPos pos = respawnConfig.respawnData().pos();
+        ServerLevel level = this.better_straw_beds$self.level().getServer().getLevel(respawnConfig.respawnData().dimension());
         if (level == null || !ModBlocks.isStrawBed(level.getBlockState(pos))) {
             return;
         }
@@ -173,7 +177,8 @@ public abstract class ServerPlayerMixin implements SpawnChainHolder, PendingBedS
     @Unique
     private boolean better_straw_beds$advanceToUsableSpawnPoint() {
         ServerPlayer self = this.better_straw_beds$self;
-        if (self.isRespawnForced()) {
+        ServerPlayer.RespawnConfig initial = self.getRespawnConfig();
+        if (initial != null && initial.forced()) {
             return true;
         }
 
@@ -181,22 +186,34 @@ public abstract class ServerPlayerMixin implements SpawnChainHolder, PendingBedS
         boolean found = true;
 
         SpawnPointState state;
-        while ((state = this.better_straw_beds$checkSpawnPoint(self.getRespawnDimension(), self.getRespawnPosition(), self.getRespawnAngle()))
-                != SpawnPointState.USABLE) {
-            if (state == SpawnPointState.BLOCKED) {
-                blockedForNow.add(new SpawnEntry(self.getRespawnDimension(), self.getRespawnPosition(), self.getRespawnAngle()));
+        while (true) {
+            ServerPlayer.RespawnConfig config = self.getRespawnConfig();
+            ResourceKey<Level> dimension = config != null ? config.respawnData().dimension() : Level.OVERWORLD;
+            BlockPos pos = config != null ? config.respawnData().pos() : null;
+            float angle = config != null ? config.respawnData().yaw() : 0.0F;
+
+            state = this.better_straw_beds$checkSpawnPoint(dimension, pos, angle);
+            if (state == SpawnPointState.USABLE) {
+                break;
+            }
+
+            if (state == SpawnPointState.BLOCKED && pos != null) {
+                blockedForNow.add(new SpawnEntry(dimension, pos, angle));
             }
 
             SpawnEntry previous = this.better_straw_beds$chain.pop();
             this.better_straw_beds$updatingChain = true;
             try {
                 if (previous == null) {
-                    self.setRespawnPosition(Level.OVERWORLD, null, 0.0F, false, false);
+                    self.setRespawnPosition(null, false);
                     found = false;
                     break;
                 }
 
-                self.setRespawnPosition(previous.dimension(), previous.pos(), previous.angle(), false, false);
+                self.setRespawnPosition(
+                        new ServerPlayer.RespawnConfig(
+                                LevelData.RespawnData.of(previous.dimension(), previous.pos(), previous.angle(), 0.0F), false),
+                        false);
             } finally {
                 this.better_straw_beds$updatingChain = false;
             }
@@ -215,14 +232,14 @@ public abstract class ServerPlayerMixin implements SpawnChainHolder, PendingBedS
             return SpawnPointState.GONE;
         }
 
-        ServerLevel level = this.better_straw_beds$self.server.getLevel(dimension);
+        ServerLevel level = this.better_straw_beds$self.level().getServer().getLevel(dimension);
         if (level == null) {
             return SpawnPointState.BLOCKED;
         }
 
         BlockState state = level.getBlockState(pos);
         if (state.getBlock() instanceof RespawnAnchorBlock) {
-            if (state.getValue(RespawnAnchorBlock.CHARGE) <= 0 || !RespawnAnchorBlock.canSetSpawn(level)) {
+            if (state.getValue(RespawnAnchorBlock.CHARGE) <= 0 || !RespawnAnchorBlock.canSetSpawn(level, pos)) {
                 return SpawnPointState.GONE;
             }
 
@@ -232,7 +249,7 @@ public abstract class ServerPlayerMixin implements SpawnChainHolder, PendingBedS
         }
 
         if (state.getBlock() instanceof BedBlock) {
-            if (!BedBlock.canSetSpawn(level)) {
+            if (!level.environmentAttributes().getValue(EnvironmentAttributes.BED_RULE, pos).canSetSpawn(level)) {
                 return SpawnPointState.GONE;
             }
 

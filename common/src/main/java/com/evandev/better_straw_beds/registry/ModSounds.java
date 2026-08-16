@@ -1,7 +1,7 @@
 package com.evandev.better_straw_beds.registry;
 
 import com.evandev.better_straw_beds.Constants;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.block.SoundType;
 
@@ -17,6 +17,6 @@ public final class ModSounds {
             1.0F, 1.0F, STRAW_BED_BREAK, STRAW_BED_STEP, STRAW_BED_PLACE, STRAW_BED_HIT, STRAW_BED_FALL);
 
     private static SoundEvent create(String path) {
-        return SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, path));
+        return SoundEvent.createVariableRangeEvent(Identifier.fromNamespaceAndPath(Constants.MOD_ID, path));
     }
 }

@@ -2,7 +2,6 @@ package com.evandev.better_straw_beds;
 
 import com.evandev.better_straw_beds.block.StrawBedBlock;
 import com.evandev.better_straw_beds.client.ClientConfigSetup;
-import com.evandev.better_straw_beds.compat.NMLCompat;
 import com.evandev.better_straw_beds.registry.ModBlocks;
 import com.evandev.better_straw_beds.registry.ModSounds;
 import net.minecraft.core.registries.Registries;
@@ -15,7 +14,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FireBlock;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
@@ -52,7 +50,7 @@ public class BetterStrawBeds {
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::addCreativeTabContents);
 
-        if (FMLEnvironment.dist.isClient()) {
+        if (FMLEnvironment.getDist().isClient()) {
             ClientConfigSetup.register(modContainer);
         }
     }
@@ -62,10 +60,6 @@ public class BetterStrawBeds {
         ModBlocks.STRAW_BED_ITEM = STRAW_BED_ITEM.get();
 
         CommonClass.init();
-
-        if (ModList.get().isLoaded("nomansland")) {
-            NMLCompat.init();
-        }
 
         event.enqueueWork(() -> ((FireBlock) Blocks.FIRE).setFlammable(ModBlocks.STRAW_BED, 60, 20));
     }
