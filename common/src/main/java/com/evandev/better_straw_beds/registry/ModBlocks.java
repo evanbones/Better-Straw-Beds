@@ -1,7 +1,9 @@
 package com.evandev.better_straw_beds.registry;
 
 import com.evandev.better_straw_beds.Constants;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -20,6 +22,7 @@ public final class ModBlocks {
 
     public static BlockBehaviour.Properties strawBedProperties() {
         return BlockBehaviour.Properties.of()
+                .setId(ResourceKey.create(Registries.BLOCK, STRAW_BED_ID))
                 .mapColor(MapColor.COLOR_YELLOW)
                 .sound(ModSounds.STRAW_BED)
                 .strength(0.2F)

@@ -8,6 +8,8 @@ import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BedItem;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
@@ -27,7 +29,9 @@ public class BetterStrawBeds implements ModInitializer {
         ModBlocks.STRAW_BED = Registry.register(
                 BuiltInRegistries.BLOCK, ModBlocks.STRAW_BED_ID, new StrawBedBlock(ModBlocks.strawBedProperties()));
         ModBlocks.STRAW_BED_ITEM = Registry.register(
-                BuiltInRegistries.ITEM, ModBlocks.STRAW_BED_ID, new BedItem(ModBlocks.STRAW_BED, new Item.Properties()));
+                BuiltInRegistries.ITEM, ModBlocks.STRAW_BED_ID,
+                new BedItem(ModBlocks.STRAW_BED, new Item.Properties()
+                        .setId(ResourceKey.create(Registries.ITEM, ModBlocks.STRAW_BED_ID))));
 
         CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS)
                 .register(output -> output.accept(ModBlocks.STRAW_BED_ITEM));

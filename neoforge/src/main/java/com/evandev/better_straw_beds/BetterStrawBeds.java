@@ -5,6 +5,7 @@ import com.evandev.better_straw_beds.client.ClientConfigSetup;
 import com.evandev.better_straw_beds.registry.ModBlocks;
 import com.evandev.better_straw_beds.registry.ModSounds;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.BedItem;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -40,7 +41,8 @@ public class BetterStrawBeds {
     private static final DeferredBlock<Block> STRAW_BED =
             BLOCKS.register("straw_bed", () -> new StrawBedBlock(ModBlocks.strawBedProperties()));
     private static final DeferredItem<BedItem> STRAW_BED_ITEM =
-            ITEMS.register("straw_bed", () -> new BedItem(STRAW_BED.get(), new Item.Properties()));
+            ITEMS.register("straw_bed", () -> new BedItem(STRAW_BED.get(), new Item.Properties()
+                    .setId(ResourceKey.create(Registries.ITEM, ModBlocks.STRAW_BED_ID))));
 
     public BetterStrawBeds(IEventBus modEventBus, ModContainer modContainer) {
         SOUNDS.register(modEventBus);
